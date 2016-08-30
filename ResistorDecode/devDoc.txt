@@ -1,0 +1,53 @@
+Summary:
+
+
+
+Functions
+
+
+Random
+
+
+Color Decode
+
+
+Resistor Decode
+
+
+Resistor Parallel/Series
+	Calculate the resistance of two resistors.
+	Info for Intent:
+		Parallel/Series
+		Reistor 1
+		Reistor 2
+
+	Resistor 1 can be a resistor from a previous decode.  Store last resistor value. 
+
+	If no previous value && no parallel/series
+		Ask for resistor 1  
+		ask for resistor 2  
+		ask for parallel/series
+		return value
+
+	If previous value && no parallel/series
+		ask for resistor 2 -> 
+		ask for parallel/series
+		return value
+
+	if no previous value && parallel/series selected in intent
+		ask for resistor 1 -> 
+		ask for resistor 2
+		return value
+
+	if previous value && parallel/series selected in intent
+		ask for resistor 2
+		return value
+
+	if previous value && resistor value and parallel/series selected in intent
+		return value
+
+	if reistor values && parallel/series selected in intent
+		return value
+
+
+

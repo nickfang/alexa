@@ -1,0 +1,45 @@
+{ 
+	"intents": 
+    [ 
+      {
+        "intent": "GetResistorDecodeIntent",
+        "slots":
+          [
+            {
+              "name": "firstColor",
+              "type": "LIST_OF_COLORS"
+            },
+            {
+              "name": "secondColor",
+              "type": "LIST_OF_COLORS"
+            },
+            {
+              "name": "thirdColor",
+              "type": "LIST_OF_COLORS"
+            }
+          ]
+        },
+     	{
+       	"intent": "GetColorInfoIntent",
+       	"slots":	
+          [	
+         		{
+          		"name":		"color",
+          		"type":		"LIST_OF_COLORS"
+        		}
+      		]
+    	},
+      	{ 
+       	"intent": "GetRandomInfoIntent" 
+        }, 
+    	{
+      	"intent": "AMAZON.HelpIntent" 
+      }, 
+    	{	
+      	"intent": "AMAZON.StopIntent" 
+      }, 
+    	{ 
+      	"intent": "AMAZON.CancelIntent" 
+      } 
+    ] 
+}

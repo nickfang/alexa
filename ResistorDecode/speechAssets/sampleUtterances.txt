@@ -1,0 +1,21 @@
+GetResistorDecodeIntent {firstColor} {secondColor} {thirdColor}
+GetResistorDecodeIntent what is {firstColor} {secondColor} {thirdColor}
+GetResistorDecodeIntent what is the value of {firstColor} {secondColor} {thirdColor}
+GetResistorDecodeIntent resistor value of {firstColor} {secondColor} {thirdColor}
+GetResistorDecodeIntent decode {firstColor} {secondColor} {thirdColor}
+GetResistorDecodeIntent value of {firstColor} {secondColor} {thirdColor}
+GetResistorDecodeIntent decode {firstColor} {secondColor} {thirdColor}
+GetResistorDecodeIntent {firstColor} {secondColor} {thirdColor} resistor value
+GetResistorDecodeIntent what is the resistor value of {firstColor} {secondColor} {thirdColor}
+GetResistorDecodeIntent how many ohms is {firstColor} {secondColor} {thirdColor}
+GetResistorDecodeIntent {firstColor} {secondColor} {thirdColor}
+
+GetColorInfoIntent {color}
+GetColorInfoIntent what does {color} mean
+GetColorInfoIntent what is {color}
+
+GetRandomInfoIntent random
+GetRandomInfoIntent info
+GetRandomInfoIntent random color
+GetRandomInfoIntent random information
+GetRandomInfoIntent random info
