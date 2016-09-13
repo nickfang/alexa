@@ -1,3 +1,5 @@
+
+LIST_OF_COLORS:
 black
 brown
 red
@@ -9,3 +11,7 @@ violet
 purple
 grey
 white
+
+LIST_OF_ORIENTATIONS:
+series
+parallel

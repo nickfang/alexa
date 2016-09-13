@@ -1,6 +1,24 @@
-{ 
-	"intents": 
-    [ 
+{
+	"intents":
+    [
+      {
+        "intent": "CalculateResistance",
+        "slots":
+          [
+            {
+              "name": "resistorA",
+              "type": "AMAZON.NUMBER"
+            },
+            {
+              "name": "resistorB",
+              "type": "AMAZON.NUMBER"
+            },
+            {
+              "name": "orientation",
+              "type": "LIST_OF_ORIENTATIONS"
+            }
+          ]
+      },
       {
         "intent": "GetResistorDecodeIntent",
         "slots":
@@ -21,25 +39,25 @@
         },
      	{
        	"intent": "GetColorInfoIntent",
-       	"slots":	
-          [	
+       	"slots":
+          [
          		{
           		"name":		"color",
           		"type":		"LIST_OF_COLORS"
         		}
       		]
     	},
-      	{ 
-       	"intent": "GetRandomInfoIntent" 
-        }, 
+      	{
+       	"intent": "GetRandomInfoIntent"
+        },
     	{
-      	"intent": "AMAZON.HelpIntent" 
-      }, 
-    	{	
-      	"intent": "AMAZON.StopIntent" 
-      }, 
-    	{ 
-      	"intent": "AMAZON.CancelIntent" 
-      } 
-    ] 
+      	"intent": "AMAZON.HelpIntent"
+      },
+    	{
+      	"intent": "AMAZON.StopIntent"
+      },
+    	{
+      	"intent": "AMAZON.CancelIntent"
+      }
+    ]
 }

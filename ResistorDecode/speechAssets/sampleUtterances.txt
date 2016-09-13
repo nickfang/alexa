@@ -1,6 +1,19 @@
-GetResistorDecodeIntent {firstColor} {secondColor} {thirdColor}
+CalculateResistance calculate {resistorA} and {resistorB} in {orientation}
+CalculateResistance calculate {resistorA} and {resistorB} in {orientation}
+CalculateResistance calculate {resistorA} and the last resistor in {orientation}
+CalculateResistance calculate the last resistor and {resistorA} in {orientation}
+CalculateResistance give me the resistance of {resistorA} and {resistorB} in {orientation}
+CalculateResistance what is {resistorA} in {orientation} with {resistorB}
+CalculateResistance what is {resistorA} in {orientation} with last value
+CalculateResistance what is the last resistor in {orientation} with {resistorA}
+CalculateResistance {resistorA} and {resistorB} in {orientation}
+CalculateResistance {resistorA} and last resistor in {orientation}
+CalculateResistance {resistorA} in {orientation} with last resistor
+CalculateResistance last resistor in {orientation} with {resistorA}
+
 GetResistorDecodeIntent what is {firstColor} {secondColor} {thirdColor}
 GetResistorDecodeIntent what is the value of {firstColor} {secondColor} {thirdColor}
+GetResistorDecodeIntent what is the resistor value of {firstColor} {secondColor} {thirdColor}
 GetResistorDecodeIntent resistor value of {firstColor} {secondColor} {thirdColor}
 GetResistorDecodeIntent decode {firstColor} {secondColor} {thirdColor}
 GetResistorDecodeIntent value of {firstColor} {secondColor} {thirdColor}
