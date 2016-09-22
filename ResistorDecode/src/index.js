@@ -56,8 +56,12 @@ function onSessionStarted(sessionStartedRequest, session) {
    console.log("onSessionStarted requestId=" + sessionStartedRequest.requestId + ", sessionId=" + session.sessionId);
 
    // TODO: Add any needed session init logic here
-   // initialize lastResistance to 0 so we know if there was a
-   session.attributes = {"lastResistance": 0};
+   // initialize lastResistor to 0 so we know if there was a
+   session.attributes = {  "orientation"  : "",
+                           "resistorA"    : NaN,
+                           "resistorB"    : NaN,
+                           "lastResistor" : NaN
+                        };
 }
 
 // Called when the user invokes the skill without specifying what they want.
@@ -85,18 +89,24 @@ function onIntent(intentRequest, session, callback) {
    }
 
    switch (intentName)  {
-      case "GetRandomInfoIntent":
-         getRandomInfoIntent(intent, session, callback);
+      case "CalculateResistanceIntent":
+         calculateResistance(intent, session, callback);
          break;
-      case "GetColorInfoIntent":
-         getColorInfoIntent(intent, session, callback);
+      case "GetResistorResponseIntent":
+         calculateResistance(intent, session, callback);
+         break;
+      case "GetOrientationResponseIntent":
+         calculateResistance(intent, session, callback);
          break;
       case "GetResistorDecodeIntent":
          getResistorDecodeIntent(intent, session, callback);
          break;
-      case "CalculateResistance":
-         calculateResistance(intent, session, callback);
+      case "GetColorInfoIntent":
+         getColorInfoIntent(intent, session, callback);
          break;
+      // case "GetRandomInfoIntent":
+      //    getColorInfoIntent(intent, session, callback);
+      //    break;
       case "AMAZON.StartOverIntent":
          getWelcomeResponse(intent, session, callback);
          break;
@@ -196,52 +206,12 @@ function buildResponse(sessionAttributes, speechletResponse) {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-
-
 function getWelcomeResponse(callback) {
-   var sessionAttributes = {},
+   var sessionAttributes = {lastResistor: NaN},
       speechOutput = "I'm ready.",
       shouldEndSession = false;
 
    callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "What would you like to decode?", shouldEndSession));
-
-}
-
-function getRandomInfoIntent(intent, session, callback) {
-   console.log("getRandomInfoIntent: " + JSON.stringify(intent));
-
-   // This intent doesn't change the sessionAttributes so just pass back was is already there.
-   // TODO:  in a session don't repeat a color until all of them have been used.
-   var sessionAttributes = session.attributes;
-   var speechOutput = "";
-
-   var colorArray = Object.keys(resistorColors);
-   colorArray.splice(colorArray.indexOf("purple"), 1 /*number of items to remove*/);
-   var randomIndex = Math.floor(Math.random() * colorArray.length);
-
-   speechOutput = "Here is some random info. " + getColorInfo(colorArray[randomIndex]);
-
-   callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", false));
-
-}
-
-function getColorInfoIntent(intent, session, callback) {
-   console.log("getColorInfoIntent: " + JSON.stringify(intent));
-   // This intent doesn't change the sessionAttributes, so just pass back what is already there.
-   var sessionAttributes = session.attributes;
-   var speechOutput = "";
-   var color = intent.slots.color.value;
-
-   if (isColorInvalid(color)) {
-      speechOutput = color + " is not a valid color.";
-   }
-   if (speechOutput !== "") {
-      callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", false));
-   }
-
-   speechOutput = getColorInfo(color);
-
-   callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", false));
 }
 
 function getColorInfo(color) {
@@ -264,6 +234,159 @@ function isColorInvalid(color) {
       return true;
    }
    return false;
+}
+
+function isResistorValueValid(resistor) {
+   // check that the resistance isn't 0, and that we were passed a value through the intent.
+   // check that this was in response to a reprompt.  If we don't have any other information in sessionAttributes, respond with help.
+   if (resistor) {
+      if (resistor.value) {
+         if (!isNaN(parseInt(resistor.value))) {
+            return true;
+         }
+         console.log("Invalid resistor value: " + resistor.value);
+         return false;
+      }
+      console.log("Resistor value was not in the intent.")
+      return false;
+   }
+   console.log("Resistor was not in the intent")
+   return false;
+}
+
+function isOrientationValueValid(orientation) {
+   if (orientation) {
+      if (orientation.value) {
+         switch(orientation.value) {
+            case "parallel":
+            case "series":
+               return true;
+            default:
+               console.log("Invalid orientation value: " + orientation.value);
+               return false;
+         }
+      }
+      console.log("Orientation value was not in the intent.");
+      return false;
+   }
+   console.log("Orientation was not in the intent");
+   return false;
+}
+
+function calculateResistance(intent, session, callback) {
+   console.log("calculateResistance: " + JSON.stringify(intent));
+
+   var sessionAttributes = session.attributes;
+   var speechOutput = "";
+   var resistorA = NaN;
+   var resistorB = NaN;
+   var orientation = "";
+   var resistance = NaN;
+
+   // Intent structure if one of the resistor values isn't stated.
+   // "intent": {
+   //    "name": "CalculateResistance",
+   //    "slots": {
+   //      "resistorA": {
+   //        "name": "resistorA",
+   //        "value": "100"
+   //      },
+   //      "resistorB": {
+   //        "name": "resistorB"
+   //      },
+   //      "orientation": {
+   //        "name": "orientation",
+   //        "value": "parallel"
+   //      }
+   //    }
+   //  }
+
+   if (!isOrientationValueValid(intent.slots.orientation)) {
+      speechOutput = "Please select series or parallel for your orientation.  " + orientation + " is not allowed.";
+      repromptText = "Would you like series or parallel?";
+      callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false))
+   } else if (!isResistorValueValid(intent.slots.resistorA)) {
+
+   }
+
+
+   // if there is only one resistor value, see if there is a lastResistor
+   if (isResistorValueValid(resistorA) && !isResistorValueValid(resistorB)) {
+      if (resistorAIsInt) {
+         if (sessionAttributes.lastResistor) {
+            resistorB = sessionAttributes.lastResistor;
+         } else {
+         sessionAttributes.lastResistor = intent.slots.resistorA.value;
+         speechOutput = "I need resistor B to calculate the " + orientation + " resistance.";
+         repromptText = "Please provide resistorB";
+         callback(sessionAttributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, repromptText, false))
+         }
+      }
+   } else if (!resistorAPresent && resistorBPresent) {
+      if (resistorBIsInt) {
+         if (sessionAttributes.lastResistor) {
+            resistorA = sessionAttributes.lastResistor;
+         } else {
+            sessionAttributes.lastResistor = intent.slots.resistorB.value;
+            speechOutput = "I need resistor A to calculate the " + orientation + " resistance.";
+            repromptText = "Please provide resistorA";
+            callback(sessionAttributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, repromptText, false))
+         }
+      }
+   }
+
+
+   // if !isNaN(sessionAttributes.lastResistor) {
+   //    if (resistorAIsInt && !resistorBIsInt) {
+   //       resistorB = sessionAttributes.lastResistor;
+   //    } else if (!resistorAIsInt && resistorBIsInt) {
+   //       resistorA = sessionAttributes.lastResistor;
+   //    }
+
+   // }
+
+
+   // if there's no last resistor, ask for a second resistance
+   if (resistorAIsInt) {
+      resistorA = parseInt(intent.slots.resistorA.value);
+   }
+   if (resistorBIsInt) {
+      resistorB = parseInt(intent.slots.resistorB.value);
+   }
+
+   if (orientation == "parallel") {
+      resistance = (resistorA * resistorB) / (resistorA + resistorB);
+   } else if (orientation == "series") {
+      resistance = resistorA + resistorB;
+   } else
+
+   console.log("\nresistorA:" + resistorA + "\nresistorB:" + resistorB + "\norientation:" + orientation + "\nresistance:" + resistance);
+
+   // TODO: adjust number of decimal places depending on the size of resistance
+   speechOutput = "The calculated resistance is " + resistance.toFixed(4);
+   callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", false));
+   // check that the orientation is either series, parallel or some prounciation of those.
+   // check that this was in response to a reprompt.  If we don't have any other information in sessionAttributes, respond with help.
+
+}
+
+function getResistorResponseIntent(intent, session, callback) {
+   console.log("getResistorResponseIntent: " + JSON.stringify(intent));
+
+   var sessionAttributes = session.attributes;
+   var speechOutput = "";
+   var resistorValue = NaN;
+
+
+}
+
+function getOrientationResponseIntent(intent, session, callback) {
+   console.log("getOrientationResponseIntent: " + JSON.stringify(intent));
+   var sessionAttributes = session.attributes;
+
+   if (isOrientationValueValid(intent.slots.orientation)){
+      sessionAttributes.
+   }
 }
 
 function getResistorDecodeIntent(intent, session, callback) {
@@ -333,94 +456,39 @@ function getResistorDecodeIntent(intent, session, callback) {
    callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", false));
 }
 
-function calculateResistance(intent, session, callback) {
-   console.log("calculateResistance: " + JSON.stringify(intent));
-
+function getColorInfoIntent(intent, session, callback) {
+   console.log("getColorInfoIntent: " + JSON.stringify(intent));
+   // This intent doesn't change the sessionAttributes, so just pass back what is already there.
    var sessionAttributes = session.attributes;
    var speechOutput = "";
-   var resistorA = NaN;
-   var resistorB = NaN;
-   var orientation = "";
-   var resistance = NaN;
+   var color = intent.slots.color.value;
 
-
-   // Intent structure if one of the resistor values isn't stated.
-   // "intent": {
-   //    "name": "CalculateResistance",
-   //    "slots": {
-   //      "resistorA": {
-   //        "name": "resistorA",
-   //        "value": "100"
-   //      },
-   //      "resistorB": {
-   //        "name": "resistorB"
-   //      },
-   //      "orientation": {
-   //        "name": "orientation",
-   //        "value": "parallel"
-   //      }
-   //    }
-   //  }
-   orientation = intent.slots.orientation.value;
-   if (orientation != "parallel" && orientation != "series") {
-      speechOutput = "Please select series or parallel for your orientation.  " + orientation + " is not allowed.";
-      repromptText = "Would you like series or parallel?";
-      callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false))
+   if (isColorInvalid(color)) {
+      speechOutput = color + " is not a valid color.";
+   }
+   if (speechOutput !== "") {
+      callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", false));
    }
 
-   // Check that there are two resistor values and that orientation is a valid string.
-   var resistorAPresent = intent.slots && intent.slots.resistorA && intent.slots.resistorA.value;
-   var resistorAIsInt = resistorAPresent && !isNaN(parseInt(intent.slots.resistorA.value));
-   var resistorBPresent = intent.slots && intent.slots.resistorB && intent.slots.resistorB.value;
-   var resistorBIsInt = resistorBPresent && !isNaN(parseInt(intent.slots.resistorB.value));
+   speechOutput = getColorInfo(color);
 
-   // if there is only one resistor value, see if there is a lastResistor
-   if (resistorAPresent && !resistorBPresent) {
-      if (resistorAIsInt) {
-         sessionAttributes.lastResistor = intent.slots.resistorA.value;
-         speechOutput = "I need resistorB to calculate the " + orientation + " resistance.";
-         repromptText = "Please provide resistorB";
-         callback(sessionAttributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, repromptText, false))
-      }
-   }
-
-   if (!resistorAPresent && resistorBPresent) {
-      if (resistorBIsInt) {
-         sessionAttributes.lastResistor = intent.slots.resistorB.value;
-         speechOutput = "I need resistorA to calculate the " + orientation + " resistance.";
-         repromptText = "Please provide resistorA";
-         callback(sessionAttributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, repromptText, false))
-      }
-   }
-
-
-   // if !isNaN(sessionAttributes.lastResistor) {
-   //    if (resistorAIsInt && !resistorBIsInt) {
-   //       resistorB = sessionAttributes.lastResistor;
-   //    } else if (!resistorAIsInt && resistorBIsInt) {
-   //       resistorA = sessionAttributes.lastResistor;
-   //    }
-
-   // }
-
-
-   // if there's no last resistor, ask for a second resistance
-   if (resistorAIsInt) {
-      resistorA = parseInt(intent.slots.resistorA.value);
-   }
-   if (resistorBIsInt) {
-      resistorB = parseInt(intent.slots.resistorB.value);
-   }
-
-   if (orientation == "parallel") {
-      resistance = (resistorA * resistorB) / (resistorA + resistorB);
-   } else if (orientation == "series") {
-      resistance = resistorA + resistorB;
-   } else
-
-   console.log("\nresistorA:" + resistorA + "\nresistorB:" + resistorB + "\norientation:" + orientation + "\nresistance:" + resistance);
-
-   speechOutput = "The calculated resistance is " + resistance.toFixed(4);
    callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", false));
-
 }
+
+// function getRandomInfoIntent(intent, session, callback) {
+//    console.log("getRandomInfoIntent: " + JSON.stringify(intent));
+
+//    // This intent doesn't change the sessionAttributes so just pass back was is already there.
+//    // TODO:  in a session don't repeat a color until all of them have been used.
+//    var sessionAttributes = session.attributes;
+//    var speechOutput = "";
+
+//    var colorArray = Object.keys(resistorColors);
+//    colorArray.splice(colorArray.indexOf("purple"), 1 /*number of items to remove*/);
+//    var randomIndex = Math.floor(Math.random() * colorArray.length);
+
+//    speechOutput = "Here is some random info. " + getColorInfo(colorArray[randomIndex]);
+
+//    callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", false));
+
+// }

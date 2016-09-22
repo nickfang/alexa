@@ -21,21 +21,58 @@ Resistor Parallel/Series
 		Reistor 1
 		Reistor 2
 
-	Resistor 1 can be a resistor from a previous decode.  Store last resistor value. 
+	Resistor 1 can be a resistor from a previous decode.  Store last resistor value.
+
+	Possible paths to get all the info needed to calculate the resistance.
+		res1 or res2 can be [valid, invalid, missing]),
+		lastresistor can be [valid, missing] (saved to sessionAttributes, not getting it from AVS so it won't be invalid)
+
+		{orientation: valid, res1: valid, res2: valid, lastresistor: *}
+			calculate resistance with res1 and res2
+
+		{orientation: valid, res1: valid, res2: missing, lastresistor: valid}
+			calculate resistance with res1 and lastresistor
+
+		{orientation: invalid, res1: *, res2: *, lastresistor: *}
+			reprompt for orientation
+
+		{orientation: valid, res1: valid, res2: invalid, lastresistor: *}
+			// assume that the user wants to calculate based off two values stated.
+			reprompt for resistor value
+
+		{orientation: valid, res1: invalid, res2: valid, lastresistor: *}
+			// assume that the user wants to calculate based off two values stated.
+			reprompt for resistor value
+
+		{orientation: valid, res1: invalid, res2: invalid, lastresistor: valid}
+			reprompt for resistor value
+
+		{orientation: valid, res1: invalid, res2: invalid, lastresistor: missing}
+			reprompt for two resistor values?
+
+		{orientation: missing, res1: missing, res2: missing, lastresistor: *}
+			// missing everything so easier to have them restate what they want instead of prompting
+			state help message
+
+		{orientation: invalid, res1: invalid, res2: invalid, lastresistor: *}
+			// misheard everything so better to restate
+			state help message
+
+------------------------------------------------------------------------------------------------------------------------
 
 	If no previous value && no parallel/series
-		Ask for resistor 1  
-		ask for resistor 2  
+		Ask for resistor 1
+		ask for resistor 2
 		ask for parallel/series
 		return value
 
 	If previous value && no parallel/series
-		ask for resistor 2 -> 
+		ask for resistor 2 ->
 		ask for parallel/series
 		return value
 
 	if no previous value && parallel/series selected in intent
-		ask for resistor 1 -> 
+		ask for resistor 1 ->
 		ask for resistor 2
 		return value
 

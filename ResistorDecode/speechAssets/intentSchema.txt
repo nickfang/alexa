@@ -20,6 +20,26 @@
           ]
       },
       {
+        "intent": "GetResistorResponseIntent",
+        "slots":
+          [
+            {
+              "name": "resistorValue",
+              "type": "AMAZON.NUMBER"
+            }
+          ]
+      },
+      {
+        "intent": "GetOrientationResponseIntent",
+        "slots":
+          [
+            {
+              "name": "orientation",
+              "type": "LIST_OF_ORIENTATIONS"
+            }
+          ]
+      },
+      {
         "intent": "GetResistorDecodeIntent",
         "slots":
           [
@@ -47,9 +67,6 @@
         		}
       		]
     	},
-      	{
-       	"intent": "GetRandomInfoIntent"
-        },
     	{
       	"intent": "AMAZON.HelpIntent"
       },

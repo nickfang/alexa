@@ -1,15 +1,22 @@
-CalculateResistance calculate {resistorA} and {resistorB} in {orientation}
-CalculateResistance calculate {resistorA} and {resistorB} in {orientation}
-CalculateResistance calculate {resistorA} and the last resistor in {orientation}
-CalculateResistance calculate the last resistor and {resistorA} in {orientation}
-CalculateResistance give me the resistance of {resistorA} and {resistorB} in {orientation}
-CalculateResistance what is {resistorA} in {orientation} with {resistorB}
-CalculateResistance what is {resistorA} in {orientation} with last value
-CalculateResistance what is the last resistor in {orientation} with {resistorA}
-CalculateResistance {resistorA} and {resistorB} in {orientation}
-CalculateResistance {resistorA} and last resistor in {orientation}
-CalculateResistance {resistorA} in {orientation} with last resistor
-CalculateResistance last resistor in {orientation} with {resistorA}
+CalculateResistanceIntent calculate {resistorA} and {resistorB} in {orientation}
+CalculateResistanceIntent calculate {resistorA} and {resistorB} in {orientation}
+CalculateResistanceIntent calculate {resistorA} and the last resistor in {orientation}
+CalculateResistanceIntent calculate the last resistor and {resistorA} in {orientation}
+CalculateResistanceIntent calculate the {orientation} resistance of {resistorA} and {resistorB}
+CalculateResistanceIntent give me the resistance of {resistorA} and {resistorB} in {orientation}
+CalculateResistanceIntent what is {resistorA} and {resistorB} in {orientation}
+CalculateResistanceIntent what is {resistorA} in {orientation} with {resistorB}
+CalculateResistanceIntent what is {resistorA} in {orientation} with last value
+CalculateResistanceIntent what is the last resistor in {orientation} with {resistorA}
+CalculateResistanceIntent {resistorA} and {resistorB} in {orientation}
+CalculateResistanceIntent {resistorA} and last resistor in {orientation}
+CalculateResistanceIntent {resistorA} in {orientation} with last resistor
+CalculateResistanceIntent last resistor in {orientation} with {resistorA}
+
+GetResistorResponseIntent {resistor}
+GetResistorResponseIntent {resistor} ohms
+
+GetOrientationResponseIntent {orientation}
 
 GetResistorDecodeIntent what is {firstColor} {secondColor} {thirdColor}
 GetResistorDecodeIntent what is the value of {firstColor} {secondColor} {thirdColor}
@@ -26,9 +33,3 @@ GetResistorDecodeIntent {firstColor} {secondColor} {thirdColor}
 GetColorInfoIntent {color}
 GetColorInfoIntent what does {color} mean
 GetColorInfoIntent what is {color}
-
-GetRandomInfoIntent random
-GetRandomInfoIntent info
-GetRandomInfoIntent random color
-GetRandomInfoIntent random information
-GetRandomInfoIntent random info
