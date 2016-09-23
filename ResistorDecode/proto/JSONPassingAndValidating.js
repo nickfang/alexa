@@ -9,13 +9,20 @@ console.log(sessionAttributes);
 console.log(sessionAttributes.orientation);
 console.log(sessionAttributes.resistorA);
 console.log(sessionAttributes.lastResistor);
+if (sessionAttributes.orientation) {
+   console.log("orientation: " + sessionAttributes.orientation);
+} else {
+   console.log("orientaiton: invalid");
+}
 if (sessionAttributes.resistorA) {
    console.log("resistorA: " + sessionAttributes.resistorA);
 } else {
    console.log("resistorA: invalid")    ;
 }
+sessionAttributes.value = "parallel";
+console.log(sessionAttributes);
 
-
+console.log("\n----------------------------------------------------------------------------------\n");
 var intent = {
       "name": "CalculateResistance",
       "slots": {
@@ -83,3 +90,23 @@ function validateOrientation(orientation) {
    }
    console.log("Orientation was not in the intent");
 }
+
+console.log("\n----------------------------------------------------------------------------------\n");
+intent = { "name": "calcualteResistanceIntent",
+           "slots": {
+              "resistorA": {
+                 "name": "resistorA"
+              },
+              "resistorB": {
+                 "name": "resistorB"
+              },
+              "orientation": {
+                 "name": "orientation"
+              }
+           }
+        };
+console.log(intent);
+console.log("\n");
+intent.slots.resistorA.value = 100;
+intent.slots.orientation.value = "parallel";
+console.log(intent);

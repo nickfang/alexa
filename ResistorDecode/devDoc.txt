@@ -60,31 +60,7 @@ Resistor Parallel/Series
 
 ------------------------------------------------------------------------------------------------------------------------
 
-	If no previous value && no parallel/series
-		Ask for resistor 1
-		ask for resistor 2
-		ask for parallel/series
-		return value
 
-	If previous value && no parallel/series
-		ask for resistor 2 ->
-		ask for parallel/series
-		return value
-
-	if no previous value && parallel/series selected in intent
-		ask for resistor 1 ->
-		ask for resistor 2
-		return value
-
-	if previous value && parallel/series selected in intent
-		ask for resistor 2
-		return value
-
-	if previous value && resistor value and parallel/series selected in intent
-		return value
-
-	if reistor values && parallel/series selected in intent
-		return value
 
 
 

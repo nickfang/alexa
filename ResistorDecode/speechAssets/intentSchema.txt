@@ -2,7 +2,7 @@
 	"intents":
     [
       {
-        "intent": "CalculateResistance",
+        "intent": "calculateResistanceIntent",
         "slots":
           [
             {
@@ -20,17 +20,17 @@
           ]
       },
       {
-        "intent": "GetResistorResponseIntent",
+        "intent": "getResistorResponseIntent",
         "slots":
           [
             {
-              "name": "resistorValue",
+              "name": "resistorB",
               "type": "AMAZON.NUMBER"
             }
           ]
       },
       {
-        "intent": "GetOrientationResponseIntent",
+        "intent": "getOrientationResponseIntent",
         "slots":
           [
             {
@@ -40,7 +40,7 @@
           ]
       },
       {
-        "intent": "GetResistorDecodeIntent",
+        "intent": "getResistorDecodeIntent",
         "slots":
           [
             {
@@ -58,7 +58,7 @@
           ]
         },
      	{
-       	"intent": "GetColorInfoIntent",
+       	"intent": "getColorInfoIntent",
        	"slots":
           [
          		{
@@ -67,6 +67,9 @@
         		}
       		]
     	},
+      {
+        "intent": "AMAZON.StartOverIntent"
+      },
     	{
       	"intent": "AMAZON.HelpIntent"
       },

@@ -1,35 +1,37 @@
-CalculateResistanceIntent calculate {resistorA} and {resistorB} in {orientation}
-CalculateResistanceIntent calculate {resistorA} and {resistorB} in {orientation}
-CalculateResistanceIntent calculate {resistorA} and the last resistor in {orientation}
-CalculateResistanceIntent calculate the last resistor and {resistorA} in {orientation}
-CalculateResistanceIntent calculate the {orientation} resistance of {resistorA} and {resistorB}
-CalculateResistanceIntent give me the resistance of {resistorA} and {resistorB} in {orientation}
-CalculateResistanceIntent what is {resistorA} and {resistorB} in {orientation}
-CalculateResistanceIntent what is {resistorA} in {orientation} with {resistorB}
-CalculateResistanceIntent what is {resistorA} in {orientation} with last value
-CalculateResistanceIntent what is the last resistor in {orientation} with {resistorA}
-CalculateResistanceIntent {resistorA} and {resistorB} in {orientation}
-CalculateResistanceIntent {resistorA} and last resistor in {orientation}
-CalculateResistanceIntent {resistorA} in {orientation} with last resistor
-CalculateResistanceIntent last resistor in {orientation} with {resistorA}
+calculateResistanceIntent calculate {resistorA} and {resistorB} in {orientation}
+calculateResistanceIntent calculate {resistorA} and {resistorB} in {orientation}
+calculateResistanceIntent calculate {resistorA} in {orientation}
+calculateResistanceIntent calculate {resistorA} and the last resistor in {orientation}
+calculateResistanceIntent calculate the last resistor and {resistorA} in {orientation}
+calculateResistanceIntent calculate the {orientation} resistance of {resistorA} and {resistorB}
+calculateResistanceIntent give me the resistance of {resistorA} and {resistorB} in {orientation}
+calculateResistanceIntent what is {resistorA} and {resistorB} in {orientation}
+calculateResistanceIntent what is {resistorA} in {orientation} with {resistorB}
+calculateResistanceIntent what is {resistorA} in {orientation} with last value
+calculateResistanceIntent what is the last resistor in {orientation} with {resistorA}
+calculateResistanceIntent what is {resistorA} in {orientation}
+calculateResistanceIntent {resistorA} and {resistorB} in {orientation}
+calculateResistanceIntent {resistorA} and last resistor in {orientation}
+calculateResistanceIntent {resistorA} in {orientation} with last resistor
+calculateResistanceIntent last resistor in {orientation} with {resistorA}
 
-GetResistorResponseIntent {resistor}
-GetResistorResponseIntent {resistor} ohms
+getResistorResponseIntent {resistorB}
+getResistorResponseIntent {resistorB} ohms
 
-GetOrientationResponseIntent {orientation}
+getOrientationResponseIntent {orientation}
 
-GetResistorDecodeIntent what is {firstColor} {secondColor} {thirdColor}
-GetResistorDecodeIntent what is the value of {firstColor} {secondColor} {thirdColor}
-GetResistorDecodeIntent what is the resistor value of {firstColor} {secondColor} {thirdColor}
-GetResistorDecodeIntent resistor value of {firstColor} {secondColor} {thirdColor}
-GetResistorDecodeIntent decode {firstColor} {secondColor} {thirdColor}
-GetResistorDecodeIntent value of {firstColor} {secondColor} {thirdColor}
-GetResistorDecodeIntent decode {firstColor} {secondColor} {thirdColor}
-GetResistorDecodeIntent {firstColor} {secondColor} {thirdColor} resistor value
-GetResistorDecodeIntent what is the resistor value of {firstColor} {secondColor} {thirdColor}
-GetResistorDecodeIntent how many ohms is {firstColor} {secondColor} {thirdColor}
-GetResistorDecodeIntent {firstColor} {secondColor} {thirdColor}
+getResistorDecodeIntent what is {firstColor} {secondColor} {thirdColor}
+getResistorDecodeIntent what is the value of {firstColor} {secondColor} {thirdColor}
+getResistorDecodeIntent what is the resistor value of {firstColor} {secondColor} {thirdColor}
+getResistorDecodeIntent resistor value of {firstColor} {secondColor} {thirdColor}
+getResistorDecodeIntent decode {firstColor} {secondColor} {thirdColor}
+getResistorDecodeIntent value of {firstColor} {secondColor} {thirdColor}
+getResistorDecodeIntent decode {firstColor} {secondColor} {thirdColor}
+getResistorDecodeIntent {firstColor} {secondColor} {thirdColor} resistor value
+getResistorDecodeIntent what is the resistor value of {firstColor} {secondColor} {thirdColor}
+getResistorDecodeIntent how many ohms is {firstColor} {secondColor} {thirdColor}
+getResistorDecodeIntent {firstColor} {secondColor} {thirdColor}
 
-GetColorInfoIntent {color}
-GetColorInfoIntent what does {color} mean
-GetColorInfoIntent what is {color}
+getColorInfoIntent {color}
+getColorInfoIntent what does {color} mean
+getColorInfoIntent what is {color}
