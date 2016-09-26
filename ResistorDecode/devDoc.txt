@@ -1,11 +1,17 @@
 Summary:
 
+Features:
+	g - color lookup
+	g - color decode
+	g - parallel and series resistance
 
+	y - detect prefix multipliers and figure out the right resistor value
+	y - color decode with 4 color bars.  (needs to still work for 3 color bars.)
+	y - add option to use decoded resistor or not.  Currently we use the decoded resistor if you previously decoded a resistor and only provide one resistor and the orientation afterwards.
+
+	r - random information.
 
 Functions
-
-
-Random
 
 
 Color Decode
@@ -81,3 +87,12 @@ false				false			false				pass through
 From here, I have 5 different reprompts.
 and one that calls handleGetHelpRequest()
 and one that just passes through.
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+Notes:
+
+alexa recgonizes "ten and twenty" as "1020"
+alexa recgonizes "fourty" as "forty" instead of a number.
+alexa recgonizes "forty" as "40".

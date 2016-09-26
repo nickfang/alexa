@@ -53,6 +53,7 @@ exports.handler = function (event, context) {
    }
 };
 
+// unlike intents,
 function clearSessionAttributes() {
    return { "decodedResistor" : NaN,
             "slots": {
@@ -73,9 +74,6 @@ function clearSessionAttributes() {
 // Called when the session starts.
 function onSessionStarted(sessionStartedRequest, session) {
    console.log("onSessionStarted requestId=" + sessionStartedRequest.requestId + ", sessionId=" + session.sessionId);
-
-   // TODO: Add any needed session init logic here
-   session.attributes = clearSessionAttributes();
 }
 
 // Called when the user invokes the skill without specifying what they want.
@@ -91,8 +89,6 @@ function onIntent(intentRequest, session, callback) {
 
    var intent = intentRequest.intent;
    var intentName = intentRequest.intent.name;
-
-   // TODO: add an option to decide when to use the decoded resistor.
 
    switch (intentName)  {
       case "calculateResistanceIntent":
@@ -132,22 +128,9 @@ function onIntent(intentRequest, session, callback) {
 // is not called when the skill returns shouldEndSession=true.
 function onSessionEnded(sessionEndedRequest, session) {
    console.log("onSessionEnded requestId=" + sessionEndedRequest.requestId + ", sessionId=" + session.sessionId);
-
-   // TODO: Add any cleanup logic here
-   clearSessionAttributes();
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-
-// // TODO:  figure out what to do with this.
-// function handleRepeatRequest(intent, session, callback) {
-//    // Repeate the previous speechOutput and repromptText from the session attributes if available else start a new game session
-//    if (!session.attributes || !session.attributes.speechOutput) {
-//       getWelcomeResponse(callback);
-//    } else {
-//       callback(session.attributes, buildSpeechletResponseWithoutCard(CARD_TITLE, session.attributes.speechOutput, session.attributes.repromptText, false));
-//    }
-// }
 
 function handleGetHelpRequest(intent, session, callback) {
    // Do not edit the help dialogue.  This has been created by the Alexa team to demonstrate best practices.
@@ -162,7 +145,7 @@ function handleGetHelpRequest(intent, session, callback) {
 }
 
 function handleFinishSessionRequest(intent, session, callback) {
-   // End session witha custon closing statement when the user wants to quit the game
+   // End session with custon closing statement when the user wants to quit the game
    callback(session.attributes, buildSpeechletResponseWithoutCard(CARD_TITLE, "Goodbye, I hope you got what you needed!", "", true));
 }
 
@@ -329,18 +312,17 @@ function calculateResistanceIntent(intent, session, callback) {
    orientation = isOrientationValueValid(intent.slots.orientation);
    if (orientation) {
       sessionAttributes.slots.orientation.value = orientation;
-   // TODO: do I need to just check for sessionAttributes.slots.orientation.value?
    } else if (sessionAttributes.slots.orientation.value) {
       orientation = sessionAttributes.slots.orientation.value;
    } else {
       repromptFor.orientation = true;
    }
 
-   //
+   // whenever a single resistor is passed in, it is passed in on resistorB.
    if (isResistorValueValid(intent.slots.resistorA)) {
       resistorA = parseInt(intent.slots.resistorA.value);
       sessionAttributes.slots.resistorA.value = resistorA;
-   } else if (isResistorValueValid(intent.slots.resistorB)) {
+   } else if (isResistorValueValid(intent.slots.resistorB) && !sessionAttributes.slots.resistorA.value) {
       // if there is no resistorA, but there is a resistorB, move the value of resistorB to resistorA
       resistorA = parseInt(intent.slots.resistorB.value);
       sessionAttributes.slots.resistorA.value = resistorA;
@@ -363,6 +345,7 @@ function calculateResistanceIntent(intent, session, callback) {
       repromptFor.resistorB = true;
    }
 
+   console.log("calculateResistanceIntent: " + repromptFor.orientation + ", " + repromptFor.resistorA + ", " + repromptFor.resistorB);
    if (repromptFor.orientation && repromptFor.resistorA && repromptFor.resistorB) {
       console.log("Someting is very wrong.  Somehow we got to this intent with no slots in the intent filled.");
       session.attributes = sessionAttributes;
@@ -392,7 +375,6 @@ function calculateResistanceIntent(intent, session, callback) {
       console.log("Something is very wrong.  We should never have a resistorB without a resistorA at this point.");
    }
 
-   // if you add a case here, make sure you add it to the isOrientationValueValid function
    switch (correctForOrientationPronunciation(orientation)) {
       case PARALLEL:
          resistance = (resistorA * resistorB) / (resistorA + resistorB);
@@ -412,11 +394,9 @@ function calculateResistanceIntent(intent, session, callback) {
    // TODO: adjust number of decimal places depending on the size of resistance
    speechOutput = "The calculated resistance of " + resistorA + " and " + resistorB + " in " + orientation + " is " + resistance.toFixed(2);
    callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", false));
-   // check that the orientation is either series, parallel or some prounciation of those.
-   // check that this was in response to a reprompt.  If we don't have any other information in sessionAttributes, respond with help.
 }
 
-function buildCalculateResistanceIntent() {
+function buildCalculateResistanceIntent(resistorA, resistorB, orientation) {
    console.log("buildCalculateResistanceIntent: resistorA:" + resistorA + ", resistorB:" + resistorB + ", orientation:" + orientation);
    var intent =   { "name": "calculateResistanceIntent",
                      "slots": {
@@ -432,6 +412,17 @@ function buildCalculateResistanceIntent() {
                      }
                   };
 
+   // if there is no value for a slot, it is passed from the alexa app missing.
+   // the intent expects the values to be strings.
+   if (resistorA) {
+      intent.slots.resistorA.value = resistorA.toString();
+   }
+   if (resistorB) {
+      intent.slots.resistorB.value = resistorB.toString();
+   }
+   if (orientation) {
+      intent.slots.orientation.value = orientation;
+   }
    return intent;
 }
 
@@ -447,16 +438,13 @@ function getResistorResponseIntent(intent, session, callback) {
 
    if (isResistorValueValid(intent.slots.resistorB)) {
       resistorB = parseInt(intent.slots.resistorB.value);
-      sessionAttributes.slots.resistorB.value = resistorB;
-      // not putting resistorB in the sessionAttributes here because it's possible that there's no resistorA yet.
-      // if there's no resistorA, calculateResistanceIntent will move resistorB to resistorA
    } else {
       speechOutput = "I do not understand the resistor value you are trying to say.";
       callback(sessionAttributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, "", false));
    }
 
+   intent = buildCalculateResistanceIntent(resistorA, resistorB, orientation);
    session.attributes = sessionAttributes;
-   intent = buildCalculateResistanceIntent();
    calculateResistanceIntent(intent, session, callback);
 }
 
@@ -471,15 +459,13 @@ function getOrientationResponseIntent(intent, session, callback) {
 
    // when we store orientation in the sessionAttributes, it should always be either PARALLEL or SERIES.
    orientation = isOrientationValueValid(intent.slots.orientation);
-   if (orientation) {
-      sessionAttributes.slots.orientation.value = orientation;
-   } else {
+   if (!orientation) {
       speechOutput = "I do not understand the orientation that you are trying to say.";
       callback(sessionAttributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, "", false));
    }
 
+   intent = buildCalculateResistanceIntent(resistorA, resistorB, orientation);
    session.attributes = sessionAttributes;
-   intent = buildCalculateResistanceIntent();
    calculateResistanceIntent(intent, session, callback);
 }
 
@@ -519,7 +505,7 @@ function getResistorDecodeIntent(intent, session, callback) {
       callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", false));
    }
 
-   // TODO: black black black?
+   // TODO: reject black black black and other special invalid color combinations.
 
    var resistorValue = (resistorColors[firstColor][0] * 10 + resistorColors[secondColor][0]) * resistorColors[thirdColor][1];
    var resistorOutput = "";
