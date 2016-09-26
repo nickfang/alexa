@@ -259,6 +259,7 @@ function correctForOrientationPronunciation(orientation) {
 }
 
 function isResistorValueValid(resistor) {
+   console.log("isResistorValueValid: " + JSON.stringify(resistor));
    // check that the resistance isn't 0, and that we were passed a value through the intent.
    // check that this was in response to a reprompt.  If we don't have any other information in sessionAttributes, respond with help.
    if (resistor) {
@@ -277,6 +278,7 @@ function isResistorValueValid(resistor) {
 }
 
 function isOrientationValueValid(orientation) {
+   console.log("isOrientationValueValid: " + JSON.stringify(orientation));
    if (orientation) {
       if (orientation.value) {
          return correctForOrientationPronunciation(orientation.value);
@@ -328,7 +330,7 @@ function calculateResistanceIntent(intent, session, callback) {
    if (orientation) {
       sessionAttributes.slots.orientation.value = orientation;
    // TODO: do I need to just check for sessionAttributes.slots.orientation.value?
-   } else if (isOrientationValueValid(sessionAttributes.slots.orientation)) {
+   } else if (sessionAttributes.slots.orientation.value) {
       orientation = sessionAttributes.slots.orientation.value;
    } else {
       repromptFor.orientation = true;
@@ -367,12 +369,12 @@ function calculateResistanceIntent(intent, session, callback) {
       handleGetHelpRequest(intent, session, callback);
    }
    if (repromptFor.orientation && !repromptFor.resistorA && !repromptFor.resistorB) {
-      speechOutput = "Please say series or parallel so I calculate " + resistorA + " ohms and " + resistorB + " ohms.";
+      speechOutput = "Please say series or parallel to find the equivalent resistance of " + resistorA + " ohms and " + resistorB + " ohms.";
       repromptText = "Would you like series or parallel?";
       callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false))
    }
    if (repromptFor.orientation && !repromptFor.resistorA && repromptFor.resistorB) {
-      speechOutput = "Please say an orientation and another resistor value to use with " + resistorB + ".";
+      speechOutput = "Please say an orientation and another resistor value to use with " + resistorA + ".";
       repromptText = "What orientation and other resistor value would you like to use?";
       callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false));
    }
@@ -382,11 +384,11 @@ function calculateResistanceIntent(intent, session, callback) {
       callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false));
    }
    if (!repromptFor.orientation && !repromptFor.resistorA && repromptFor.resistorB) {
-      speechOutput = "Please say the resistor value you would like to use to find the " + orientation + "resistance with " + resistorA + ".";
+      speechOutput = "Please say the resistor value you would like to use to find the " + orientation + " resistance with " + resistorA + ".";
       repromptText = "What resistor value would you like to use?";
       callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false));
    }
-   if (repromtpFor.resistorA && !repromptFor.resistorB) {
+   if (repromptFor.resistorA && !repromptFor.resistorB) {
       console.log("Something is very wrong.  We should never have a resistorB without a resistorA at this point.");
    }
 
@@ -456,9 +458,7 @@ function getResistorResponseIntent(intent, session, callback) {
    if (isResistorValueValid(session.attributes.slots.resistorA)) {
       resistorA = parseInt(session.attributes.slots.resistorA.value);
    }
-   if (isOrientationValueValid(session.attributes.slots.orientation)) {
-      orientation = session.attributes.slots.orientation.value;
-   }
+   orientation = isOrientationValueValid(session.attributes.slots.orientation);
 
    if (isResistorValueValid(intent.slots.resistorB)) {
       resistorB = parseInt(intent.slots.resistorB.value);
@@ -491,7 +491,7 @@ function getOrientationResponseIntent(intent, session, callback) {
    }
 
    // when we store orientation in the sessionAttributes, it should always be either PARALLEL or SERIES.
-   orientation = isOrientationValueValid(intent.slots.orietation);
+   orientation = isOrientationValueValid(intent.slots.orientation);
    if (orientation) {
       sessionAttributes.slots.orientation.value = orientation;
    } else {
