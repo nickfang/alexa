@@ -250,13 +250,12 @@ function correctForOrientationPronunciation(orientation) {
    switch (orientation) {
       case "parallel":
          return PARALLEL;
-         break;
       case "series":
          return SERIES;
-         break;
       default:
          console.log("Invalid orientation value: " + orientation.value);
          return "";
+   }
 }
 
 function isResistorValueValid(resistor) {
@@ -270,17 +269,17 @@ function isResistorValueValid(resistor) {
          console.log("Invalid resistor value: " + resistor.value);
          return false;
       }
-      console.log("Resistor value was not in the intent.")
+      console.log("Resistor value was not in the intent.");
       return false;
    }
-   console.log("Resistor was not in the intent")
+   console.log("Resistor was not in the intent");
    return false;
 }
 
 function isOrientationValueValid(orientation) {
    if (orientation) {
       if (orientation.value) {
-         return correctForOrientationPronunciation(orientation.value)
+         return correctForOrientationPronunciation(orientation.value);
       }
       console.log("Orientation value was not in the intent.");
       return "";
@@ -363,7 +362,7 @@ function calculateResistanceIntent(intent, session, callback) {
    }
 
    if (repromptFor.orientation && repromptFor.resistorA && repromptFor.resistorB) {
-      console.log("Someting is very wrong.  Somehow we got to this intent with no slots in the intent filled.")
+      console.log("Someting is very wrong.  Somehow we got to this intent with no slots in the intent filled.");
       session.attributes = sessionAttributes;
       handleGetHelpRequest(intent, session, callback);
    }
@@ -374,21 +373,21 @@ function calculateResistanceIntent(intent, session, callback) {
    }
    if (repromptFor.orientation && !repromptFor.resistorA && repromptFor.resistorB) {
       speechOutput = "Please say an orientation and another resistor value to use with " + resistorB + ".";
-      repromptText = "What orientation and other resistor value would you like to use?"
-      callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false))
+      repromptText = "What orientation and other resistor value would you like to use?";
+      callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false));
    }
    if (!repromptFor.orientation && repromptFor.resistorA && repromptFor.resistorB) {
       speechOutput = "Please say the two resistor values you would like to find the " + orientation + " resistance of.";
       repromptText = "What resistor values would you like to use?";
-      callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false))
+      callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false));
    }
    if (!repromptFor.orientation && !repromptFor.resistorA && repromptFor.resistorB) {
       speechOutput = "Please say the resistor value you would like to use to find the " + orientation + "resistance with " + resistorA + ".";
       repromptText = "What resistor value would you like to use?";
-      callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false))
+      callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false));
    }
    if (repromtpFor.resistorA && !repromptFor.resistorB) {
-      console.log("Something is very wrong.  We should never have a resistorB without a resistorA at this point.")
+      console.log("Something is very wrong.  We should never have a resistorB without a resistorA at this point.");
    }
 
    // if you add a case here, make sure you add it to the isOrientationValueValid function
@@ -400,7 +399,7 @@ function calculateResistanceIntent(intent, session, callback) {
          resistance = resistorA + resistorB;
          break;
       default:
-         console.log("Something is very wrong, but remember: Don't Panic and always carry a towel.  ")
+         console.log("Something is very wrong, but remember: Don't Panic and always carry a towel.  ");
          console.log(orientation + " caused something bad to happen in correctForOrientationPronunciation().");
          break;
    }
