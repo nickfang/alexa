@@ -61,6 +61,23 @@ Resistor Parallel/Series
 ------------------------------------------------------------------------------------------------------------------------
 
 
+Add another intent for if someone wants to use the decoded resistor value in the calculation?
 
 
+------------------------------------------------------------------------------------------------------------------------
 
+when a reprompt is needed for:
+
+orientation 	resistorA	resistorB
+true				true			true				call handleGetHelpRequest()
+true				false			true				reprompt for an orientation and a resistor value.
+true				true			false				--should not happen.  resistorB get's moved to resistorA if there's no resistorA.--
+true				false			false				reprompt for an orientation
+false 			true			true				reprompt for two resistor value
+false				false			true				reprompt for a resistor value
+false				true			false				--should not happen.  resistorB get's moved to resistorA if there's no resistorA.--
+false				false			false				pass through
+
+From here, I have 5 different reprompts.
+and one that calls handleGetHelpRequest()
+and one that just passes through.
