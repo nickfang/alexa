@@ -416,6 +416,25 @@ function calculateResistanceIntent(intent, session, callback) {
    // check that this was in response to a reprompt.  If we don't have any other information in sessionAttributes, respond with help.
 }
 
+function buildCalculateResistanceIntent() {
+   console.log("buildCalculateResistanceIntent: resistorA:" + resistorA + ", resistorB:" + resistorB + ", orientation:" + orientation);
+   var intent =   { "name": "calculateResistanceIntent",
+                     "slots": {
+                       "resistorA": {
+                           "name": "resistorA"
+                        },
+                        "resistorB": {
+                           "name": "resistorB"
+                        },
+                        "orientation": {
+                           "name": "orientation"
+                        }
+                     }
+                  };
+
+   return intent;
+}
+
 // this should only be called if we need one more resistor value, so we should always deal with resistorB.
 function getResistorResponseIntent(intent, session, callback) {
    console.log("getResistorResponseIntent: " + JSON.stringify(intent));
@@ -437,6 +456,7 @@ function getResistorResponseIntent(intent, session, callback) {
    }
 
    session.attributes = sessionAttributes;
+   intent = buildCalculateResistanceIntent();
    calculateResistanceIntent(intent, session, callback);
 }
 
@@ -459,6 +479,7 @@ function getOrientationResponseIntent(intent, session, callback) {
    }
 
    session.attributes = sessionAttributes;
+   intent = buildCalculateResistanceIntent();
    calculateResistanceIntent(intent, session, callback);
 }
 
