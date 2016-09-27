@@ -17,7 +17,7 @@ var resistorColors = {
       "silver": [NaN, 1/100, 0.1]
    };
 
-var CARD_TITLE = "Resistor Information.";
+var CARD_TITLE = "Resistor Assistant.";
 var PARALLEL = "parallel";
 var SERIES = "series";
 
