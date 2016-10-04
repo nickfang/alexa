@@ -92,16 +92,6 @@ function onIntent(intentRequest, session, callback) {
    var intentName = intentRequest.intent.name;
    console.log("intent: " + intentName);
 
-   // handle yes/no intent after the user has been prompted
-   if (session.attributes && session.attributes.userPromptToContinue) {
-      delete session.attributes.userPromptToContinue;
-      if ("AMAZON.NoIntent" == intentName) {
-         handleFinishSessionRequest(intent, session, callBack);
-      } else if ("AMAZON.YesIntent" === intentName) {
-         handleRepeatRequest(intent, session, callback);
-      }
-   }
-
    switch (intentName)  {
       case "calculateResistanceIntent":
          calculateResistanceIntent(intent, session, callback);
