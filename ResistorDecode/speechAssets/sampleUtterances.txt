@@ -1,24 +1,32 @@
 calculateResistanceIntent calculate the resistance of {resistorA} and {resistorB}
+calculateResistanceIntent calculate the resistance of {resistorA} and {resistorB} ohms
 calculateResistanceIntent calculate the resistance of {resistorA} ohms and {resistorB}
 calculateResistanceIntent calculate the resistance of {resistorA} ohms and {resistorB} ohms
 calculateResistanceIntent calculate the {orientation} resistance of {resistorA} and {resistorB}
+calculateResistanceIntent calculate the {orientation} resistance of {resistorA} and {resistorB} ohms
 calculateResistanceIntent calculate the {orientation} resistance of {resistorA} ohms and {resistorB}
 calculateResistanceIntent calculate the {orientation} resistance of {resistorA} ohms and {resistorB} ohms
 calculateResistanceIntent calculate the {orientation} resistance of {resistorB}
 calculateResistanceIntent calculate the {orientation} resistance of {resistorB} ohms
 calculateResistanceIntent calculate {resistorA} and {resistorB}
 calculateResistanceIntent calculate {resistorA} and {resistorB} in {orientation}
+calculateResistanceIntent calculate {resistorA} and {resistorB} ohms in {orientation}
 calculateResistanceIntent calculate {resistorA} ohms and {resistorB}
 calculateResistanceIntent calculate {resistorA} ohms and {resistorB} in {orientation}
+calculateResistanceIntent calculate {resistorA} ohms and {resistorB} ohms
 calculateResistanceIntent calculate {resistorA} ohms and {resistorB} ohms
 calculateResistanceIntent calculate {resistorA} ohms and {resistorB} ohms in {orientation}
 calculateResistanceIntent calculate {resistorB} in {orientation}
 calculateResistanceIntent calculate {resistorB} ohms in {orientation}
 calculateResistanceIntent give me the resistance of {resistorA} and {resistorB}
 calculateResistanceIntent give me the resistance of {resistorA} and {resistorB} in {orientation}
+calculateResistanceIntent give me the resistance of {resistorA} and {resistorB} ohms
+calculateResistanceIntent give me the resistance of {resistorA} and {resistorB} ohms in {orientation}
 calculateResistanceIntent give me the resistance of {resistorA} in {orientation} with {resistorB}
+calculateResistanceIntent give me the resistance of {resistorA} in {orientation} with {resistorB} ohms
 calculateResistanceIntent give me the resistance of {resistorA} ohms and {resistorB}
 calculateResistanceIntent give me the resistance of {resistorA} ohms and {resistorB} in {orientation}
+calculateResistanceIntent give me the resistance of {resistorA} ohms and {resistorB} ohms
 calculateResistanceIntent give me the resistance of {resistorA} ohms and {resistorB} ohms
 calculateResistanceIntent give me the resistance of {resistorA} ohms and {resistorB} ohms in {orientation}
 calculateResistanceIntent give me the resistance of {resistorA} ohms in {orientation} with {resistorB}
@@ -26,13 +34,22 @@ calculateResistanceIntent give me the resistance of {resistorA} ohms in {orienta
 calculateResistanceIntent give me the resistance of {resistorB} in {orientation}
 calculateResistanceIntent give me the resistance of {resistorB} ohms in {orientation}
 calculateResistanceIntent give me the {orientation} resistance of {resistorA} and {resistorB}
-calculateResistanceIntent give me the {orientation} resistance of {resistorA} ohms
 calculateResistanceIntent give me the {orientation} resistance of {resistorA} ohms and {resistorB}
 calculateResistanceIntent give me the {orientation} resistance of {resistorA} ohms and {resistorB} ohms
 calculateResistanceIntent give me the {orientation} resistance of {resistorB}
+calculateResistanceIntent give me the {orientation} resistance of {resistorB} ohms
+calculateResistanceIntent what is the {orientation} resistance of {resistorA} and {resistorB}
+calculateResistanceIntent what is the {orientation} resistance of {resistorA} and {resistorB} ohms
+calculateResistanceIntent what is the {orientation} resistance of {resistorA} ohms and {resistorB}
+calculateResistanceIntent what is the {orientation} resistance of {resistorA} ohms and {resistorB} ohms
+calculateResistanceIntent what is the {orientation} resistance of {resistorB}
+calculateResistanceIntent what is the {orientation} resistance of {resistorB} ohms
 calculateResistanceIntent what is {resistorA} and {resistorB}
 calculateResistanceIntent what is {resistorA} and {resistorB} in {orientation}
+calculateResistanceIntent what is {resistorA} and {resistorB} ohms
+calculateResistanceIntent what is {resistorA} and {resistorB} ohms in {orientation}
 calculateResistanceIntent what is {resistorA} in {orientation} with {resistorB}
+calculateResistanceIntent what is {resistorA} in {orientation} with {resistorB} ohms
 calculateResistanceIntent what is {resistorA} ohms and {resistorB}
 calculateResistanceIntent what is {resistorA} ohms and {resistorB} in {orientation}
 calculateResistanceIntent what is {resistorA} ohms and {resistorB} ohms
@@ -41,6 +58,8 @@ calculateResistanceIntent what is {resistorA} ohms in {orientation} with {resist
 calculateResistanceIntent what is {resistorA} ohms in {orientation} with {resistorB} ohms
 calculateResistanceIntent what is {resistorB} in {orientation}
 calculateResistanceIntent what is {resistorB} ohms in {orientation}
+calculateResistanceIntent {orientation} and {resistorB}
+calculateResistanceIntent {orientation} and {resistorB} ohms
 calculateResistanceIntent {orientation} with {resistorA} and {resistorB}
 calculateResistanceIntent {orientation} with {resistorA} ohms and {resistorB}
 calculateResistanceIntent {orientation} with {resistorA} ohms and {resistorB} ohms
@@ -48,12 +67,15 @@ calculateResistanceIntent {orientation} with {resistorB}
 calculateResistanceIntent {orientation} with {resistorB} ohms
 calculateResistanceIntent {resistorA} and {resistorB}
 calculateResistanceIntent {resistorA} and {resistorB} in {orientation}
+calculateResistanceIntent {resistorA} and {resistorB} ohms
+calculateResistanceIntent {resistorA} and {resistorB} ohms in {orientation}
 calculateResistanceIntent {resistorA} ohms and {resistorB}
 calculateResistanceIntent {resistorA} ohms and {resistorB} in {orientation}
 calculateResistanceIntent {resistorA} ohms and {resistorB} ohms
 calculateResistanceIntent {resistorA} ohms and {resistorB} ohms in {orientation}
 calculateResistanceIntent {resistorB} and {orientation}
 calculateResistanceIntent {resistorB} in {orientation}
+calculateResistanceIntent {resistorB} ohms and {orientation}
 calculateResistanceIntent {resistorB} ohms in {orientation}
 
 getResistorResponseIntent {resistorB}

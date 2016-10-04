@@ -73,22 +73,34 @@ function clearSessionAttributes() {
 
 // Called when the session starts.
 function onSessionStarted(sessionStartedRequest, session) {
-   console.log("onSessionStarted requestId=" + sessionStartedRequest.requestId + ", sessionId=" + session.sessionId);
+   console.log("onSessionStarted(): requestId=" + sessionStartedRequest.requestId + ", sessionId=" + session.sessionId);
+   session.attributes = clearSessionAttributes();
 }
 
 // Called when the user invokes the skill without specifying what they want.
 function onLaunch(launchRequest, session, callback) {
-   console.log("onLaunch requestId=" + launchRequest.requestId + ", sessionId=" + session.sessionId);
+   console.log("onLaunch(): requestId=" + launchRequest.requestId + ", sessionId=" + session.sessionId);
 
    getWelcomeResponse(callback);
 }
 
 // Called when the user specifies an intent for this skill.
 function onIntent(intentRequest, session, callback) {
-   console.log("onIntent requestId=" + intentRequest.requestId + ", sessionId=" + session.sessionId);
+   console.log("onIntent(): requestId=" + intentRequest.requestId + ", sessionId=" + session.sessionId);
 
    var intent = intentRequest.intent;
    var intentName = intentRequest.intent.name;
+   console.log("intent: " + intentName);
+
+   // handle yes/no intent after the user has been prompted
+   if (session.attributes && session.attributes.userPromptToContinue) {
+      delete session.attributes.userPromptToContinue;
+      if ("AMAZON.NoIntent" == intentName) {
+         handleFinishSessionRequest(intent, session, callBack);
+      } else if ("AMAZON.YesIntent" === intentName) {
+         handleRepeatRequest(intent, session, callback);
+      }
+   }
 
    switch (intentName)  {
       case "calculateResistanceIntent":
@@ -119,7 +131,7 @@ function onIntent(intentRequest, session, callback) {
          handleFinishSessionRequest(intent, session, callback);
          break;
       default:
-         console.log("unknown intent: " + intentName);
+         console.log("onIntent(): unknown intent: " + intentName);
          handleFinishSessionRequest(intent, session, callback);
    }
 }
@@ -127,7 +139,7 @@ function onIntent(intentRequest, session, callback) {
 // Called when the user ends the session.
 // is not called when the skill returns shouldEndSession=true.
 function onSessionEnded(sessionEndedRequest, session) {
-   console.log("onSessionEnded requestId=" + sessionEndedRequest.requestId + ", sessionId=" + session.sessionId);
+   console.log("onSessionEnded(): requestId=" + sessionEndedRequest.requestId + ", sessionId=" + session.sessionId);
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -135,11 +147,11 @@ function onSessionEnded(sessionEndedRequest, session) {
 function handleGetHelpRequest(intent, session, callback) {
    // Do not edit the help dialogue.  This has been created by the Alexa team to demonstrate best practices.
 
-   var speechOutput = "You can say three colors to decode a resistor or say one color to get it's value and multiplier." +
-                        "You can also ask for the equivalent resistance of two resistors in parallel or series." +
-                        "If you decode a resistor and only provide one resistor value for calculating the equivalent resistance, " +
-                        "the decoded resistor value will be used.";
-   var repromptText = "I'm ready to decode resistor or calculate your equivalent resistance.";
+   var speechOutput = "You can say three colors to decode a resistor, say one color to get it's value and multiplier, or " +
+                      "you can ask for the equivalent resistance of two resistors in parallel or series.  " +
+                      "If you decode a resistor and then provide only one resistor value for calculating the " +
+                      "equivalent resistance, the decoded resistor value will be used for the calculation.  ";
+   var repromptText = "Would you like to decode a resistor or calculate an equivalent resistance? ";
    var shouldEndSession = false;
    callback(session.attributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, repromptText, shouldEndSession));
 }
@@ -199,11 +211,13 @@ function buildResponse(sessionAttributes, speechletResponse) {
 // --------------------------------------------------------------------------------------------------------------------
 
 function getWelcomeResponse(callback) {
-   var sessionAttributes = clearSessionAttributes(),
-      speechOutput = "I'm ready.",
-      shouldEndSession = false;
+   var sessionAttributes = clearSessionAttributes();
+   var speechOutput = "Hi, I am your resistor assistant.  Please say help, if you need it.  ";
+   var repromptText = "Please state the three color bands on your resistor or " +
+                      "two resistors and their orientation to calculate an equivalent resistance. ";
+   var shouldEndSession = false;
 
-   callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "What would you like to decode or calculate?", shouldEndSession));
+   callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, shouldEndSession));
 }
 
 function getColorInfo(color) {
@@ -218,7 +232,7 @@ function getColorInfo(color) {
          output += " and a multiplier of " + resistorColors[color][1];
       }
    }
-   return color + output;
+   return color + output + ".";
 }
 
 function isColorInvalid(color) {
@@ -236,13 +250,13 @@ function correctForOrientationPronunciation(orientation) {
       case "series":
          return SERIES;
       default:
-         console.log("Invalid orientation value: " + orientation.value);
+         console.log("correctForOrientationPronunciation(): Invalid orientation value: " + orientation.value);
          return "";
    }
 }
 
 function isResistorValueValid(resistor) {
-   console.log("isResistorValueValid: " + JSON.stringify(resistor));
+   // console.log("isResistorValueValid: " + JSON.stringify(resistor));
    // check that the resistance isn't 0, and that we were passed a value through the intent.
    // check that this was in response to a reprompt.  If we don't have any other information in sessionAttributes, respond with help.
    if (resistor) {
@@ -250,26 +264,26 @@ function isResistorValueValid(resistor) {
          if (!isNaN(parseInt(resistor.value))) {
             return true;
          }
-         console.log("Invalid resistor value: " + resistor.value);
+         console.log("isResistorValueValid(): Invalid resistor value. " + JSON.stringify(resistor));
          return false;
       }
-      console.log("Resistor value was not in the intent.");
+      console.log("isResistorValueValid(): Resistor value was not in the intent. " + JSON.stringify(resistor));
       return false;
    }
-   console.log("Resistor was not in the intent");
+   console.log("isResistorValueValid(): Resistor was not in the intent. " + JSON.stringify(resistor));
    return false;
 }
 
 function isOrientationValueValid(orientation) {
-   console.log("isOrientationValueValid: " + JSON.stringify(orientation));
+   // console.log("isOrientationValueValid: " + JSON.stringify(orientation));
    if (orientation) {
       if (orientation.value) {
          return correctForOrientationPronunciation(orientation.value);
       }
-      console.log("Orientation value was not in the intent.");
+      console.log("isOrientationValueValid(): Orientation value was not in the intent. " + JSON.stringify(orientation));
       return "";
    }
-   console.log("Orientation was not in the intent");
+   console.log("isOrientaitonValueValid(): Orientation was not in the intent" + JSON.stringify(orientation));
    return "";
 }
 
@@ -278,6 +292,7 @@ function calculateResistanceIntent(intent, session, callback) {
 
    var sessionAttributes = session.attributes;
    var speechOutput = "";
+   var repromptText = "";
    var resistorA = NaN;
    var resistorB = NaN;
    var orientation = "";
@@ -345,7 +360,7 @@ function calculateResistanceIntent(intent, session, callback) {
       repromptFor.resistorB = true;
    }
 
-   console.log("calculateResistanceIntent: " + repromptFor.orientation + ", " + repromptFor.resistorA + ", " + repromptFor.resistorB);
+   console.log("calculateResistanceIntent(): " + repromptFor.orientation + ", " + repromptFor.resistorA + ", " + repromptFor.resistorB);
    if (repromptFor.orientation && repromptFor.resistorA && repromptFor.resistorB) {
       console.log("Someting is very wrong.  Somehow we got to this intent with no slots in the intent filled.");
       session.attributes = sessionAttributes;
@@ -354,22 +369,22 @@ function calculateResistanceIntent(intent, session, callback) {
    if (repromptFor.orientation && !repromptFor.resistorA && !repromptFor.resistorB) {
       speechOutput = "Please say series or parallel to find the equivalent resistance of " + resistorA + " ohms and " + resistorB + " ohms.";
       repromptText = "Would you like series or parallel?";
-      callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false))
+      callback(sessionAttributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, repromptText, false))
    }
    if (repromptFor.orientation && !repromptFor.resistorA && repromptFor.resistorB) {
       speechOutput = "Please say an orientation and another resistor value to use with " + resistorA + ".";
       repromptText = "What orientation and other resistor value would you like to use?";
-      callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false));
+      callback(sessionAttributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, repromptText, false));
    }
    if (!repromptFor.orientation && repromptFor.resistorA && repromptFor.resistorB) {
       speechOutput = "Please say the two resistor values you would like to find the " + orientation + " resistance of.";
       repromptText = "What resistor values would you like to use?";
-      callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false));
+      callback(sessionAttributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, repromptText, false));
    }
    if (!repromptFor.orientation && !repromptFor.resistorA && repromptFor.resistorB) {
       speechOutput = "Please say the resistor value you would like to use to find the " + orientation + " resistance with " + resistorA + ".";
       repromptText = "What resistor value would you like to use?";
-      callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, repromptText, false));
+      callback(sessionAttributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, repromptText, false));
    }
    if (repromptFor.resistorA && !repromptFor.resistorB) {
       console.log("Something is very wrong.  We should never have a resistorB without a resistorA at this point.");
@@ -392,12 +407,13 @@ function calculateResistanceIntent(intent, session, callback) {
    sessionAttributes = clearSessionAttributes();
 
    // TODO: adjust number of decimal places depending on the size of resistance
-   speechOutput = "The calculated resistance of " + resistorA + " and " + resistorB + " in " + orientation + " is " + resistance.toFixed(2);
-   callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", false));
+   speechOutput = "The calculated resistance of " + resistorA + " and " + resistorB + " in " + orientation + " is " + resistance.toFixed(2) + ".  " +
+                  "I'm ready to decode a resistor or calculate an equivalent resistance. ";
+   callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", true));
 }
 
 function buildCalculateResistanceIntent(resistorA, resistorB, orientation) {
-   console.log("buildCalculateResistanceIntent: resistorA:" + resistorA + ", resistorB:" + resistorB + ", orientation:" + orientation);
+   console.log("buildCalculateResistanceIntent(): resistorA:" + resistorA + ", resistorB:" + resistorB + ", orientation:" + orientation);
    var intent =   { "name": "calculateResistanceIntent",
                      "slots": {
                        "resistorA": {
@@ -428,7 +444,7 @@ function buildCalculateResistanceIntent(resistorA, resistorB, orientation) {
 
 // this should only be called if we need one more resistor value, so we should always deal with resistorB.
 function getResistorResponseIntent(intent, session, callback) {
-   console.log("getResistorResponseIntent: " + JSON.stringify(intent));
+   console.log("getResistorResponseIntent(): " + JSON.stringify(intent));
 
    var sessionAttributes = session.attributes;
    var speechOutput = ""
@@ -449,7 +465,7 @@ function getResistorResponseIntent(intent, session, callback) {
 }
 
 function getOrientationResponseIntent(intent, session, callback) {
-   console.log("getOrientationResponseIntent: " + JSON.stringify(intent));
+   console.log("getOrientationResponseIntent(): " + JSON.stringify(intent));
 
    var sessionAttributes = session.attributes;
    var speechOutput = "";
@@ -470,9 +486,8 @@ function getOrientationResponseIntent(intent, session, callback) {
 }
 
 function getResistorDecodeIntent(intent, session, callback) {
-   console.log("getResistorDecodeIntent: " + JSON.stringify(intent));
+   console.log("getResistorDecodeIntent(): " + JSON.stringify(intent));
 
-   // Set sessionAttributes to what it was and then change it later if applicable.
    var sessionAttributes = session.attributes;
    var speechOutput = "";
    var firstColor = intent.slots.firstColor.value;
@@ -489,7 +504,7 @@ function getResistorDecodeIntent(intent, session, callback) {
    }
    // if speechOutput is not empty string, then there was some sort of error.
    if (speechOutput !== "") {
-      callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", false));
+      callback(sessionAttributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, "", false));
    }
 
    // Check for impossible combinations.
@@ -502,7 +517,7 @@ function getResistorDecodeIntent(intent, session, callback) {
    }
    // if speechOutput is not empty string, then there was some sort of error.
    if (speechOutput !== "") {
-      callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", false));
+      callback(sessionAttributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, "", false));
    }
 
    // TODO: reject black black black and other special invalid color combinations.
@@ -529,29 +544,30 @@ function getResistorDecodeIntent(intent, session, callback) {
       }
    }
 
-   speechOutput = "The value of the resistor is " + resistorOutput;
-   console.log(speechOutput);
-   console.log("decodedResistor: " + resistorValue);
+   speechOutput = "The value of the resistor is " + resistorOutput +
+                  ".  Please state another resistor value and an orientation to find the equivalent resistance";
+   // console.log(speechOutput);
+   // console.log("decodedResistor: " + resistorValue);
    sessionAttributes.decodedResistor = resistorValue;
 
    callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", false));
 }
 
 function getColorInfoIntent(intent, session, callback) {
-   console.log("getColorInfoIntent: " + JSON.stringify(intent));
+   console.log("getColorInfoIntent(): " + JSON.stringify(intent));
    // This intent doesn't change the sessionAttributes, so just pass back what is already there.
    var sessionAttributes = session.attributes;
    var speechOutput = "";
    var color = intent.slots.color.value;
 
    if (isColorInvalid(color)) {
-      speechOutput = color + " is not a valid color.";
+      speechOutput = color + " is not a valid color.  Please state a valid color. ";
    }
    if (speechOutput !== "") {
-      callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", false));
+      callback(sessionAttributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, "", false));
    }
 
-   speechOutput = getColorInfo(color);
+   speechOutput = getColorInfo(color) + "  Please state the three color bands to decode your resistor's value.  ";
 
    callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", false));
 }
