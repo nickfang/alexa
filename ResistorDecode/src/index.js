@@ -109,7 +109,7 @@ function onIntent(intentRequest, session, callback) {
          getColorInfoIntent(intent, session, callback);
          break;
       case "AMAZON.StartOverIntent":
-         getWelcomeResponse(intent, session, callback);
+         getWelcomeResponse(callback);
          break;
       case "AMAZON.HelpIntent":
          handleGetHelpRequest(intent, session, callback);
@@ -344,7 +344,7 @@ function calculateResistanceIntent(intent, session, callback) {
       sessionAttributes.slots.resistorB.value = resistorB;
    } else if (sessionAttributes.slots.resistorB.value) {
       resistorB = sessionAttributes.slots.resistorB.value;
-   } else if (sessionAttributes.decodedResistor) {
+   } else if (sessionAttributes.decodedResistor && !repromptFor.resistorA) {
       resistorB = sessionAttributes.decodedResistor;
    } else {
       repromptFor.resistorB = true;
@@ -367,7 +367,12 @@ function calculateResistanceIntent(intent, session, callback) {
       callback(sessionAttributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, repromptText, false));
    }
    if (!repromptFor.orientation && repromptFor.resistorA && repromptFor.resistorB) {
-      speechOutput = "Please say the two resistor values you would like to find the " + orientation + " resistance of.";
+      speechOutput = "Please say the two resistor values you would like to find the " + orientation + " resistance of";
+      if (sessionAttributes.decodedResistor) {
+         speechOutput += ", or say one resistor value to use the resistor you just decoded. ";
+      } else {
+         speechOutput += ". ";
+      }
       repromptText = "What resistor values would you like to use?";
       callback(sessionAttributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, repromptText, false));
    }
@@ -380,26 +385,33 @@ function calculateResistanceIntent(intent, session, callback) {
       console.log("Something is very wrong.  We should never have a resistorB without a resistorA at this point.");
    }
 
-   switch (correctForOrientationPronunciation(orientation)) {
-      case PARALLEL:
-         resistance = (resistorA * resistorB) / (resistorA + resistorB);
-         break;
-      case SERIES:
-         resistance = resistorA + resistorB;
-         break;
-      default:
-         console.log("Something is very wrong, but remember: Don't Panic and always carry a towel.  ");
-         console.log(orientation + " caused something bad to happen in correctForOrientationPronunciation().");
-         break;
+   if (!repromptFor.orientation && !repromptFor.resistorA && !repromptFor.resistorA) {
+      switch (correctForOrientationPronunciation(orientation)) {
+         case PARALLEL:
+            resistance = (resistorA * resistorB) / (resistorA + resistorB);
+            break;
+         case SERIES:
+            resistance = resistorA + resistorB;
+            break;
+         default:
+            console.log("Something is very wrong, but remember: Don't Panic and always carry a towel.  ");
+            console.log(orientation + " caused something bad to happen in correctForOrientationPronunciation().");
+            break;
+      }
+      console.log("\nresistorA:" + resistorA + "\nresistorB:" + resistorB + "\norientation:" + orientation + "\nresistance:" + resistance);
+      sessionAttributes = clearSessionAttributes();
+
+      // TODO: adjust number of decimal places depending on the size of resistance
+      speechOutput = "The calculated resistance of " + resistorA + " and " + resistorB + " in " + orientation + " is " + resistance.toFixed(2) + ".  " +
+                     "I'm ready to decode a resistor or calculate an equivalent resistance. ";
+      callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", true));
+   } else {
+      console.log("calculateResistanceIntent(): At the end of the function without reprompt or calculating resistance.  Something needs to be fixed!  " +
+                  "sessionAttributes: " + JSON.stringify(sessionAttributes));
+      speechOutput = "I'm sorry, I experienced a technical difficulty.  Please try your request again. ";
+      callback(sessionAttributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, "", false));
    }
 
-   console.log("\nresistorA:" + resistorA + "\nresistorB:" + resistorB + "\norientation:" + orientation + "\nresistance:" + resistance);
-   sessionAttributes = clearSessionAttributes();
-
-   // TODO: adjust number of decimal places depending on the size of resistance
-   speechOutput = "The calculated resistance of " + resistorA + " and " + resistorB + " in " + orientation + " is " + resistance.toFixed(2) + ".  " +
-                  "I'm ready to decode a resistor or calculate an equivalent resistance. ";
-   callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", true));
 }
 
 function buildCalculateResistanceIntent(resistorA, resistorB, orientation) {
