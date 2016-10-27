@@ -1,3 +1,9 @@
+TODO:
+	Create a standard word to log when there is an error and error numbers
+	stop logging isResistorValueValid(): && isOrientationValueValid(): Only necessary when debugging.
+	Make sure the <function name>(): is only called at the beginning of the function.
+
+
 Summary:
 
 Features:

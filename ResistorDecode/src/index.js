@@ -20,6 +20,7 @@ var resistorColors = {
 var CARD_TITLE = "Resistor Assistant.";
 var PARALLEL = "parallel";
 var SERIES = "series";
+var DEBUG_MODE = false
 
 // Route the incoming request based on type (DecodeIntent, ColorIntent, RandomIntent).
 // The JSON body of the request is provided in the event parameter.
@@ -254,13 +255,19 @@ function isResistorValueValid(resistor) {
          if (!isNaN(parseInt(resistor.value))) {
             return true;
          }
-         console.log("isResistorValueValid(): Invalid resistor value. " + JSON.stringify(resistor));
+         if (DEBUG_MODE) {
+            console.log("isResistorValueValid(): Invalid resistor value. " + JSON.stringify(resistor));
+         }
          return false;
       }
-      console.log("isResistorValueValid(): Resistor value was not in the intent. " + JSON.stringify(resistor));
+      if (DEBUG_MODE) {
+         console.log("isResistorValueValid(): Resistor value was not in the intent. " + JSON.stringify(resistor));
+      }
       return false;
    }
-   console.log("isResistorValueValid(): Resistor was not in the intent. " + JSON.stringify(resistor));
+   if (DEBUG_MODE) {
+      console.log("isResistorValueValid(): Resistor was not in the intent. " + JSON.stringify(resistor));
+   }
    return false;
 }
 
@@ -270,15 +277,19 @@ function isOrientationValueValid(orientation) {
       if (orientation.value) {
          return correctForOrientationPronunciation(orientation.value);
       }
-      console.log("isOrientationValueValid(): Orientation value was not in the intent. " + JSON.stringify(orientation));
+      if (DEBUG_MODE) {
+         console.log("isOrientationValueValid(): Orientation value was not in the intent. " + JSON.stringify(orientation));
+      }
       return "";
    }
-   console.log("isOrientaitonValueValid(): Orientation was not in the intent" + JSON.stringify(orientation));
+   if (DEBUG_MODE) {
+      console.log("isOrientaitonValueValid(): Orientation was not in the intent" + JSON.stringify(orientation));
+   }
    return "";
 }
 
 function calculateResistanceIntent(intent, session, callback) {
-   console.log("calculateResistanceIntent: " + JSON.stringify(intent));
+   console.log("calculateResistanceIntent(): " + JSON.stringify(intent));
 
    var sessionAttributes = session.attributes;
    var speechOutput = "";
@@ -350,8 +361,11 @@ function calculateResistanceIntent(intent, session, callback) {
       repromptFor.resistorB = true;
    }
 
-   console.log("calculateResistanceIntent(): " + repromptFor.orientation + ", " + repromptFor.resistorA + ", " + repromptFor.resistorB);
+   if (DEBUG_MODE) {
+      console.log("calculateResistanceIntent: " + repromptFor.orientation + ", " + repromptFor.resistorA + ", " + repromptFor.resistorB);
+   }
    if (repromptFor.orientation && repromptFor.resistorA && repromptFor.resistorB) {
+      // TODO: add error number and message here
       console.log("Someting is very wrong.  Somehow we got to this intent with no slots in the intent filled.");
       session.attributes = sessionAttributes;
       handleGetHelpRequest(intent, session, callback);
@@ -382,6 +396,7 @@ function calculateResistanceIntent(intent, session, callback) {
       callback(sessionAttributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, repromptText, false));
    }
    if (repromptFor.resistorA && !repromptFor.resistorB) {
+      // TODO: add error number and message here.
       console.log("Something is very wrong.  We should never have a resistorB without a resistorA at this point.");
    }
 
@@ -394,11 +409,14 @@ function calculateResistanceIntent(intent, session, callback) {
             resistance = resistorA + resistorB;
             break;
          default:
+            // TODO: create error number and message for this
             console.log("Something is very wrong, but remember: Don't Panic and always carry a towel.  ");
             console.log(orientation + " caused something bad to happen in correctForOrientationPronunciation().");
             break;
       }
-      console.log("\nresistorA:" + resistorA + "\nresistorB:" + resistorB + "\norientation:" + orientation + "\nresistance:" + resistance);
+      if (DEBUG_MODE) {
+         console.log("\nresistorA:" + resistorA + "\nresistorB:" + resistorB + "\norientation:" + orientation + "\nresistance:" + resistance);
+      }
       sessionAttributes = clearSessionAttributes();
 
       // TODO: adjust number of decimal places depending on the size of resistance
@@ -406,7 +424,8 @@ function calculateResistanceIntent(intent, session, callback) {
                      "I'm ready to decode a resistor or calculate an equivalent resistance. ";
       callback(sessionAttributes, buildSpeechletResponse(CARD_TITLE, speechOutput, "", true));
    } else {
-      console.log("calculateResistanceIntent(): At the end of the function without reprompt or calculating resistance.  Something needs to be fixed!  " +
+      // TODO: create error number and message for this
+      console.log("calculateResistanceIntent: At the end of the function without reprompt or calculating resistance.  Something needs to be fixed!  " +
                   "sessionAttributes: " + JSON.stringify(sessionAttributes));
       speechOutput = "I'm sorry, I experienced a technical difficulty.  Please try your request again. ";
       callback(sessionAttributes, buildSpeechletResponseWithoutCard(CARD_TITLE, speechOutput, "", false));
