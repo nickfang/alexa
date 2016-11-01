@@ -1,3 +1,6 @@
+# This version only works from 2016.10.27 since that is when the logging from index.js was update to work with this script.
+
+
 import seaborn as sns
 import os
 import glob
@@ -53,7 +56,7 @@ def concatenate(inDir = "out\\extracted", outDir = "out", outFilename = "concatL
 		for inFilename in inFileList:
 			if inFilename not in indexes:
 				with open(inFilename, 'r') as inFile:
-					outFile.write(inFile.read() + "\n")
+					outFile.write(inFile.read())
 				with open(os.path.join(outDir,indexFilename),'a') as indexFile:
 					indexFile.write(inFilename + "\n")
 
@@ -70,6 +73,8 @@ def getLogRange(filename = "out\\concatIndex.txt"):
 		endDate = parser.parse(contents[-1])
 		return [startDate,endDate]
 
+
+
 def addEscapeForSearch(string, char):
 	loc = string.find(char)
 	if loc is not -1:
@@ -83,50 +88,41 @@ def getFromLog(functionCall, contents):
 	reString = addEscapeForSearch(reString, ")")
 	reFunctionCall = re.finditer(reDateTime + ".*(" + reString + ")",contents)
 	count = 0
+	dfList = []
 	for item in reFunctionCall:
+		dfList.append([item.group(1),item.group(2),item.group(3)])
 		# print(item.group(0))
 		count += 1
-	print(functionCall + " " + str(count))
+	# print(functionCall + " " + str(count))
+	# print(dfList)
+	return dfList
 
 
 # figure out how many times each function is called:
 # [getColorInfoIntent, getResistorDecodeIntent, calculateResistanceIntent,
 #  getResistorResponseIntent, getOrientationResponseIntent]
 # return it with a timestamp.
-def getFunctionCalls(filename = "out\\concatLog.txt"):
+def getFunctionCalls(filename = "out\\concatLog.txt", outFile="out\\functionCalls.csv"):
 	if os.path.isfile(filename):
 		contents = []
 		with open(filename, 'r') as logFile:
 			contents = logFile.read()
-		getFromLog("START", contents)
-		getFromLog("onSessionStarted():", contents)
-		getFromLog("onLaunch():",contents)
-		getFromLog("getColorInfoIntent():", contents)
-		getFromLog("getResistorDecodeIntent():", contents)
-		getFromLog("calculateResistanceIntent():", contents)
-		getFromLog("buildCalculateResistanceIntent():", contents)
-		getFromLog("getResistorResponseIntent():", contents)
-		getFromLog("getOrientationResponseIntent():", contents)
-		getFromLog("END", contents)
-		# for item in reGetColorInfoIntents:
-		# 	print(item.group(0))
-		# getColorInfoIntents = re.findall(r"getColorInfoIntent\(\)", contents)
-		# getResistorDecodeIntents = re.findall(r"getResistorDecodeIntent\(\)", contents)
-		# calculateResistanceIntents = re.findall(r"calculateResistanceIntent\(\)", contents)
-		# getResistorResponseIntents = re.findall(r"getResistorResponseIntent\(\)", contents)
-		# getOrientationResponseIntents = re.findall(r"getOrientationResponseIntent\(\)", contents)
-		# print("getColorInfoIntent(): " + str(len(getColorInfoIntents)))
-		# print("getResistorDecodeIntent(): " + str(len(getResistorDecodeIntents)))
-		# print("calculateResistanceIntent(): " + str(len(calculateResistanceIntents)))
-		# print("getResistorDecodeIntent(): " + str(len(getResistorDecodeIntents)))
-		# print("getOrientationResponseIntent(): " + str(len(getOrientationResponseIntents)))
+		dfList = []
+		logItems = ["START", "onSessionStarted():", "onLaunch():", "getColorInfoIntent():", "getResistorDecodeIntent():", "calculateResistanceIntent():", "buildCalculateResistanceIntent():", "getResistorResponseIntent():", "getOrientationResponseIntent():", "END"]
+		for item in logItems:
+			dfList.append(pandas.DataFrame.from_dict(getFromLog(item, contents)))
+		concatDF=pandas.concat(dfList, ignore_index=True)
+		concatDF.sort_values([0,1], inplace=True)
+		concatDF.to_csv(outFile)
 	else:
 		print("The file concatLog.txt has not been created.")
 
-# put function calls into csv [date time, function call, ]
+# Figure out the order that functions are called from START to END.  Count the number of times each path is used.
+
+# bar graph of number of times each function is called.  Graph of how many times each is called to completion?  (probably have to update logging again for this to work)
 
 # print(os.getcwd())
 # extractFiles()
-# concatenate()
-getFunctionCalls()
+concatenate()
+# getFunctionCalls()
 # print(getLogRange())

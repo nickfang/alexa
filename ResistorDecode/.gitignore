@@ -1,0 +1,3 @@
+#files to ignore for Resistor Assistant
+tools/logs/**
+tools/out/**
