@@ -102,7 +102,7 @@ def getFromLog(functionCall, contents):
 # [getColorInfoIntent, getResistorDecodeIntent, calculateResistanceIntent,
 #  getResistorResponseIntent, getOrientationResponseIntent]
 # return it with a timestamp.
-def getFunctionCalls(filename = "out\\concatLog.txt", outFile="out\\functionCalls.csv"):
+def createFunctionCallsCSV(filename = "out\\concatLog.txt", outFile="out\\functionCalls.csv"):
 	if os.path.isfile(filename):
 		contents = []
 		with open(filename, 'r') as logFile:
@@ -120,9 +120,13 @@ def getFunctionCalls(filename = "out\\concatLog.txt", outFile="out\\functionCall
 # Figure out the order that functions are called from START to END.  Count the number of times each path is used.
 
 # bar graph of number of times each function is called.  Graph of how many times each is called to completion?  (probably have to update logging again for this to work)
+def graphFunctionCalls(inFile="out\\functionCalls.csv"):
+    df = pandas.read_csv(inFile)
+    df.plot()
+
 
 # print(os.getcwd())
 # extractFiles()
-concatenate()
+# concatenate()
 # getFunctionCalls()
 # print(getLogRange())
