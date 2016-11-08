@@ -15,6 +15,7 @@ Green
 	bug fixes
 
 Yellow
+	Implement tolerance band calculation.  (seems like a big change)
 
 Red
 
