@@ -20,3 +20,10 @@ Yellow
 Red
 
 ---------------------------------------------------------------------------------------------------------------------------------
+
+TODO:
+
+- If ResistorResponseIntent() or OrientationResponseIntent() fails, don't call calculateResistance.
+
+- Make sure callbacks are being used correctly.
+
