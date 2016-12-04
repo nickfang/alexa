@@ -13,11 +13,24 @@ Green
 	processing log file
 	updating speech output with ssml
 	bug fixes
+	reorganize git
 
 Yellow
 	Implement tolerance band calculation.  (seems like a big change)
 
 Red
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+error handling
+
+processing log file
+
+updating speech output wiht ssml
+
+bug fixes
+
+reorganize git - I created a branch for alexa called version1.1.  This made a branch for all of the alexa repository.  I just wanted to create a version 1.1 for resistorDecode.  I also need to rename resistorDecode to resistorAssistant.
 
 ---------------------------------------------------------------------------------------------------------------------------------
 
