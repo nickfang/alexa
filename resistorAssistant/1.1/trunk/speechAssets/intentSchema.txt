@@ -1,0 +1,83 @@
+{
+	"intents":
+    [
+      {
+        "intent": "calculateResistanceIntent",
+        "slots":
+          [
+            {
+              "name": "resistorA",
+              "type": "AMAZON.NUMBER"
+            },
+            {
+              "name": "resistorB",
+              "type": "AMAZON.NUMBER"
+            },
+            {
+              "name": "orientation",
+              "type": "LIST_OF_ORIENTATIONS"
+            }
+          ]
+      },
+      {
+        "intent": "getResistorResponseIntent",
+        "slots":
+          [
+            {
+              "name": "resistorB",
+              "type": "AMAZON.NUMBER"
+            }
+          ]
+      },
+      {
+        "intent": "getOrientationResponseIntent",
+        "slots":
+          [
+            {
+              "name": "orientation",
+              "type": "LIST_OF_ORIENTATIONS"
+            }
+          ]
+      },
+      {
+        "intent": "getResistorDecodeIntent",
+        "slots":
+          [
+            {
+              "name": "firstColor",
+              "type": "LIST_OF_COLORS"
+            },
+            {
+              "name": "secondColor",
+              "type": "LIST_OF_COLORS"
+            },
+            {
+              "name": "thirdColor",
+              "type": "LIST_OF_COLORS"
+            }
+          ]
+        },
+     	{
+       	"intent": "getColorInfoIntent",
+       	"slots":
+          [
+         		{
+          		"name":		"color",
+          		"type":		"LIST_OF_COLORS"
+        		}
+      		]
+    	},
+      {
+        "intent": "AMAZON.StartOverIntent"
+      },
+    	{
+      	"intent": "AMAZON.HelpIntent"
+      },
+    	{
+      	"intent": "AMAZON.StopIntent"
+      },
+    	{
+      	"intent": "AMAZON.CancelIntent"
+      }
+    ]
+}
