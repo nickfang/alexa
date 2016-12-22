@@ -1,0 +1,39 @@
+Realtor Assistant
+
+------------------------------------------------------------------------------------
+SUMMARY:
+
+Create a amazon alexa app that helps relators despense information.  Start with the skill-sample-nodejs-city-guide example and go from there.  I want this to a little easier to add questions that people might ask.  To this end, create a python script that will generate javascript code for each intent in the intent schema.  This code will just pull response information from dynamoDB for each question.  Eventually, I imagine that there will be a web interface for realtors to be able to add questions and possible utterances as well as the expected responses.  For now setup it up like the example where the responses are global variables and then when that is working, implement with dynamoDB.
+------------------------------------------------------------------------------------
+PRIORITIES:
+
+Green
+	Figure out folder structure
+	Implement summary intnet
+	Implement asking price intent
+	Implement square footage intent
+	Python script for genenrating Intent Functinos
+
+Yellow
+	Store responses in dynamoDB
+
+Red
+
+------------------------------------------------------------------------------------
+
+Create an alexa app the allows a person to ask about information about a house.
+Create a a sample that pulls data from a dynamoDB.  Eventually figure out how to pull data from MLS or import data from Relator.
+Types of questions:
+	What is the type of house.
+	What is sq footage
+	How many rooms
+	how many bathrooms
+	what is the price
+	what is the county
+	price per sq ft
+
+	has the price changed recently
+
+
+------------------------------------------------------------------------------------
+TODO:
