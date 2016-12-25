@@ -1,5 +1,4 @@
 var Alexa = require('alexa-sdk');
-var http = require('http');
 
 var states = {
     SEARCHMODE: '_SEARCHMODE',
@@ -151,44 +150,6 @@ var startSearchHandlers = Alexa.CreateStateHandler(states.SEARCHMODE, {
     'AMAZON.StopIntent': function () {
         this.emit(':tell', goodbyeMessage);
     },
-    'getNewsIntent': function () {
-        httpGet(location, function (response) {
-
-            // Parse the response into a JSON object ready to be formatted.
-            var responseData = JSON.parse(response);
-            var cardContent = "Data provided by New York Times\n\n";
-
-            // Check if we have correct data, If not create an error speech out to try again.
-            if (responseData == null) {
-                output = "There was a problem with getting data please try again";
-            }
-            else {
-                output = newsIntroMessage;
-
-                // If we have data.
-                for (var i = 0; i < responseData.response.docs.length; i++) {
-
-                    if (i < numberOfResults) {
-                        // Get the name and description JSON structure.
-                        var headline = responseData.response.docs[i].headline.main;
-                        var index = i + 1;
-
-                        output += " Headline " + index + ": " + headline + ";";
-
-                        cardContent += " Headline " + index + ".\n";
-                        cardContent += headline + ".\n\n";
-                    }
-                }
-
-                output += " See your Alexa app for more information.";
-            }
-
-            var cardTitle = location + " News";
-
-            alexa.emit(':tellWithCard', output, cardTitle, cardContent);
-        });
-    },
-
     'AMAZON.RepeatIntent': function () {
         this.emit(':ask', output, HelpMessage);
     },
@@ -260,37 +221,6 @@ exports.handler = function (event, context, callback) {
     alexa.registerHandlers(newSessionHandlers, startSearchHandlers, topFiveHandlers);
     alexa.execute();
 };
-
-// Create a web request and handle the response.
-function httpGet(query, callback) {
-  console.log("/n QUERY: "+query);
-
-    var options = {
-      //http://api.nytimes.com/svc/search/v2/articlesearch.json?q=seattle&sort=newest&api-key=
-        host: 'api.nytimes.com',
-        path: '/svc/search/v2/articlesearch.json?q=' + query + '&sort=newest&api-key=' + APIKey,
-        method: 'GET'
-    };
-
-    var req = http.request(options, (res) => {
-
-        var body = '';
-
-        res.on('data', (d) => {
-            body += d;
-        });
-
-        res.on('end', function () {
-            callback(body);
-        });
-
-    });
-    req.end();
-
-    req.on('error', (e) => {
-        console.error(e);
-    });
-}
 
 String.prototype.trunc =
       function (n) {
