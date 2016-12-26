@@ -9,10 +9,10 @@ PRIORITIES:
 
 Green
 	Figure out folder structure
-	Implement summary intnet
+	Implement summary intent
 	Implement asking price intent
 	Implement square footage intent
-	Python script for genenrating Intent Functinos
+	Python script for genenrating Intent Functinos and utterances
 
 Yellow
 	Store responses in dynamoDB
@@ -31,9 +31,44 @@ Types of questions:
 	what is the price
 	what is the county
 	price per sq ft
+	Relator Information
 
 	has the price changed recently
 
 
 ------------------------------------------------------------------------------------
 TODO:
+
+
+------------------------------------------------------------------------------------
+RESEARCH:
+
+Do I need to create states for this app?
+	Starting state - ask for a summary or any question about the house.
+	Are there any questions that they need to answer yes or no to.  That should put them into another state.
+	I could keep track of what has been asked and not include those in the help.  Then I would have two states.  NesWession and InSession.
+
+If I want to add states, that makes it more difficult to codegen the intent handlers.
+If I don't have multiple states, do I just use Alexa.handler?
+
+Reponses (from alexa-sdk):
+	NewSession
+	LaunchRequest
+	SessionEndRequest
+		Call AMAZON.StopIntent
+
+	AMAZON.HelpIntent
+		"You can ask about " + <buid array of possible intents - codegen from dynamoDB>
+	AMAZON.RepeatIntent
+	AMAZON.StopIntent
+	AMAZON.StartOverIntent
+	AMAZON.CancelIntent
+
+	Welcome
+		"Welcome to " + address + ".  What would you like to know about this location?"
+	<intent>
+		codegen from dynamoDB or pull from dynamoDB? Seems like doing a codegen from dynamoDB would be better since we wouldn't be hitting the database as much.  We definitely have to codegen to create the intent handler, so might as well put the response in the function while we're at it.
+	unhandled
+		make sure and log the session info to get an idea of what they were trying to ask about
+
+Do I need any slots for generated intents?
