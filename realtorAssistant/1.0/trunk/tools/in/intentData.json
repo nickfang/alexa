@@ -1,0 +1,16 @@
+{
+	"intents": [
+		{	"name": "summary",
+			"response":	"A cozy three bedroom two bathroom house.",
+			"utterances": [""]},
+		{	"name": "askingPrice",
+			"response": "$290,000",
+			"utterances": [""]},
+		{	"name": "squareFootage",
+			"response": "1,400",
+			"utterances": [""]},
+		{	"name": "address",
+			"response": "2704 Lane City Drive, Austin, TX 78725",
+			"utterances": [""]}
+	]
+}
