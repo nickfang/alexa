@@ -72,3 +72,4 @@ Reponses (from alexa-sdk):
 		make sure and log the session info to get an idea of what they were trying to ask about
 
 Do I need any slots for generated intents?
+Create an intermediate JSON object for the codegen.
