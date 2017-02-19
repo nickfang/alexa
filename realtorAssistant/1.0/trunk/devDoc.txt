@@ -13,6 +13,7 @@ Green
 	Implement asking price intent
 	Implement square footage intent
 	Python script for genenrating Intent Functinos and utterances
+		use temp json data that represents data grabbed from dynamoDB
 
 Yellow
 	Store responses in dynamoDB
@@ -34,6 +35,9 @@ Types of questions:
 	Relator Information
 
 	has the price changed recently
+
+
+Question Paths:
 
 
 ------------------------------------------------------------------------------------
